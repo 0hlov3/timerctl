@@ -53,4 +53,9 @@ timerctl set 10s --tick 200ms --beep
 When `--beep` is enabled, `timerctl`:
 - Rings the terminal bell
 - Sends a system notification (via [beeep](https://github.com/gen2brain/beeep))
-- 
+
+## Development
+```shell
+go test ./...
+```
+The CLI is built with [Cobra](https://github.com/spf13/cobra).
