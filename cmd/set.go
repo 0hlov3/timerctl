@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/0hlov3/timerctl/internal/models"
 	"github.com/spf13/cobra"
 
 	"github.com/0hlov3/timerctl/internal/timer"
@@ -36,7 +37,7 @@ var setCmd = &cobra.Command{
 			return fmt.Errorf("invalid duration: %q", args[0])
 		}
 
-		opt := timer.Options{
+		opt := models.Options{
 			Tick:       flagTick,
 			ShowMillis: !flagNoMillis,
 			BellOnDone: flagBeep,

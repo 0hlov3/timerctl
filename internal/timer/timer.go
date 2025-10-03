@@ -7,16 +7,11 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/gen2brain/beeep"
+	"github.com/0hlov3/timerctl/internal/models"
+	"github.com/0hlov3/timerctl/internal/notification"
 )
 
-type Options struct {
-	Tick       time.Duration
-	ShowMillis bool
-	BellOnDone bool
-}
-
-func Run(ctx context.Context, d time.Duration, opt Options) error {
+func Run(ctx context.Context, d time.Duration, opt models.Options) error {
 	if d <= 0 {
 		return fmt.Errorf("duration must be > 0")
 	}
@@ -42,13 +37,7 @@ func Run(ctx context.Context, d time.Duration, opt Options) error {
 			remaining := time.Until(deadline)
 			if remaining <= 0 {
 				if opt.BellOnDone {
-					fmt.Print("\a")
-					err := beeep.Beep(beeep.DefaultFreq, beeep.DefaultDuration)
-					var icon []byte
-					err = beeep.Notify("timerctl", fmt.Sprintf("The %s Timer ended", d.String()), icon)
-					if err != nil {
-						fmt.Println("\rcould not send Notification")
-					}
+					notification.Notify(fmt.Sprintf("The %s Timer ended", d.String()))
 				}
 				fmt.Print("\rDone!\n")
 				return nil

@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/0hlov3/timerctl/internal/models"
 	"github.com/0hlov3/timerctl/internal/timer"
 )
 
@@ -28,7 +29,7 @@ func captureStdout(fn func()) string {
 }
 
 func TestRun_ErrOnNonPositiveDuration(t *testing.T) {
-	opt := timer.Options{Tick: 10 * time.Millisecond, ShowMillis: true}
+	opt := models.Options{Tick: 10 * time.Millisecond, ShowMillis: true}
 	if err := timer.Run(context.Background(), 0, opt); err == nil {
 		t.Fatalf("expected error for 0 duration, got nil")
 	}
@@ -39,7 +40,7 @@ func TestRun_ErrOnNonPositiveDuration(t *testing.T) {
 
 func TestRun_DefaultTickApplied(t *testing.T) {
 	// Tick <= 0 should default to 100ms (we just assert it doesn't panic or block strangely)
-	opt := timer.Options{Tick: 0, ShowMillis: true}
+	opt := models.Options{Tick: 0, ShowMillis: true}
 	out := captureStdout(func() {
 		_ = timer.Run(context.Background(), 10*time.Millisecond, opt)
 	})
@@ -50,7 +51,7 @@ func TestRun_DefaultTickApplied(t *testing.T) {
 
 func TestRun_Cancel(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
-	opt := timer.Options{Tick: 5 * time.Millisecond, ShowMillis: true}
+	opt := models.Options{Tick: 5 * time.Millisecond, ShowMillis: true}
 
 	// Cancel immediately
 	cancel()
@@ -70,7 +71,7 @@ func TestRun_Cancel(t *testing.T) {
 }
 
 func TestRun_CompletesAndPrintsDone(t *testing.T) {
-	opt := timer.Options{
+	opt := models.Options{
 		Tick:       5 * time.Millisecond,
 		ShowMillis: true,
 		BellOnDone: false, // avoid desktop notification / bell in tests
