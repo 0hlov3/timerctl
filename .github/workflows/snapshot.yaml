@@ -1,0 +1,30 @@
+#name: Snapshot (GoReleaser)
+#
+#on:
+#  push:
+#    branches: [ main ]
+#
+#permissions:
+#  contents: read
+#
+#jobs:
+#  snapshot:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0
+#
+#      - name: Set up Go
+#        uses: actions/setup-go@v5
+#        with:
+#          go-version: "1.25"
+#
+#      - name: Go version
+#        run: go version
+#
+#      - name: GoReleaser snapshot
+#        uses: goreleaser/goreleaser-action@v6
+#        with:
+#          version: latest
+#          args: release --clean --snapshot

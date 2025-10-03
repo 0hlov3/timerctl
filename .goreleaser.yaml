@@ -1,0 +1,105 @@
+version: 2
+
+project_name: timerctl
+
+env:
+  - CGO_ENABLED=0
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: timerctl
+    main: ./main.go
+    binary: timerctl
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    # Match your ldflags from flake
+    ldflags:
+      - -s -w
+    flags:
+      - -trimpath
+
+archives:
+  - id: release-archives
+    builds:
+      - timerctl
+    # Produce tar.gz with a friendly name
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{- title .Os }}_{{- if eq .Arch "amd64" }}x86_64{{ else }}{{ .Arch }}{{ end }}
+    format: tar.gz
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: "checksums_{{ .Version }}.txt"
+
+signs:
+# Optional: enable if you want cosign or gpg; commented by default
+# - artifacts: checksum
+#   cmd: cosign
+#   args: ["sign-blob", "--yes"]
+#   signature: "${artifact}.sig"
+
+nfpms:
+  # Optional: build .deb/.rpm (Linux only). Comment out if you don’t want packages.
+  - id: linux-packages
+    package_name: timerctl
+    formats: [deb, rpm]
+    homepage: "https://github.com/0hlov3/timerctl"
+    description: "Timerctl - a tiny terminal timer & stopwatch"
+    maintainer: "0hlov3"
+    license: MIT
+    bindir: /usr/local/bin
+    section: utils
+    contents:
+      - src: ./LICENSE
+        dst: /usr/share/doc/timerctl/LICENSE
+      - src: ./README.md
+        dst: /usr/share/doc/timerctl/README.md
+    dependencies:
+      # On Linux, you shell out to notify-send; not strictly required, but recommended to list
+      - libnotify-bin
+
+changelog:
+  # GoReleaser will generate release notes from commits between tags
+  use: git
+  sort: asc
+  filters:
+    exclude:
+      - '^chore(\(.*\))?:'   # ignore chores
+      - '^ci(\(.*\))?:'      # ignore CI
+      - '^test(\(.*\))?:'    # ignore tests
+      - '^docs(\(.*\))?:'    # ignore docs
+      - '^refactor(\(.*\))?:'
+      - Merge pull request
+      - Merge branch
+  groups:
+    - title: "Features"
+      regexp: "^feat(\\(.*\\))?:"
+      order: 0
+    - title: "Fixes"
+      regexp: "^fix(\\(.*\\))?:"
+      order: 1
+    - title: "Performance"
+      regexp: "^perf(\\(.*\\))?:"
+      order: 2
+    - title: "Build"
+      regexp: "^build(\\(.*\\))?:"
+      order: 3
+    - title: "Other"
+      order: 99
+
+release:
+  # Use GitHub Releases
+  github:
+    owner: 0hlov3
+    name: timerctl
+  draft: false
+  prerelease: auto
