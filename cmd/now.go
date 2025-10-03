@@ -16,7 +16,7 @@ var nowCmd = &cobra.Command{
 	Short: "Shows the actual time in RFC850",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(time.Now().Format(time.RFC850))
+		fmt.Fprintln(cmd.OutOrStdout(), time.Now().Format(time.RFC850))
 	},
 }
 
