@@ -1,6 +1,6 @@
 module github.com/0hlov3/timerctl
 
-go 1.25.1
+go 1.25.0
 
 require (
 	github.com/gen2brain/beeep v0.11.1
