@@ -59,3 +59,19 @@ When `--beep` is enabled, `timerctl`:
 go test ./...
 ```
 The CLI is built with [Cobra](https://github.com/spf13/cobra).
+
+### Nix
+#### Build
+```shell
+nix build .#default
+```
+#### Run without building explicitly
+```shell
+nix run . -- set 10s --beep
+```
+#### Develop
+```shell
+nix develop
+go test ./...
+go run . stopwatch --max 5s --bar
+```
